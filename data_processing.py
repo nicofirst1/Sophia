@@ -94,17 +94,19 @@ def data_pipeline(path2file, classification=False):
 
     y_data = df[label_indices]
     x_data = df.drop(label_indices, axis=1)
+    y_labels = [x.strip("Labels") for x in y_data.columns]
+    y_labels = [x.strip(":") for x in y_labels]
 
     if classification:
         y_data[y_data != 0] = 1
-        label_encoding={y_data.columns[idx]:idx for idx in range(len(y_data.columns))}
+        label_encoding = {y_data.columns[idx]: idx for idx in range(len(y_data.columns))}
         y_data["Labels"] = -1
-        for k,v in label_encoding.items():
-            y_data["Labels"][y_data[k]==1]=v
+        for k, v in label_encoding.items():
+            y_data["Labels"][y_data[k] == 1] = v
 
-            a=12
+        y_data = y_data["Labels"]
 
-    return x_data, y_data
+    return x_data, y_data, y_labels
 
 
 if __name__ == '__main__':
