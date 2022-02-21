@@ -63,21 +63,35 @@ if __name__ == '__main__':
 
     for idx, yl in enumerate(y_labels):
         if "Brest" in yl:
-            class_weight[idx] = 0.146
+            class_weight[idx] = 0.12
         elif "Colon" in yl:
-            class_weight[idx] = 0.116
+            class_weight[idx] = 0.062
         elif "Lung" in yl:
-            class_weight[idx] = 0.109
+            class_weight[idx] = 0.25
         elif "Prostate" in yl:
-            class_weight[idx] = 0.096
+            class_weight[idx] = 0.125
+        elif "Bladder" in yl:
+            class_weight[idx] = 0.03
+        elif "Kidney" in yl:
+            class_weight[idx] = 0.04
+        elif "Melanoma" in yl:
+            class_weight[idx] = 0.01
+        elif "Oral" in yl:
+            class_weight[idx] = 0.017
+        elif "Thyroid" in yl:
+            class_weight[idx] = 0.025
+        elif "Uterine" in yl:
+            class_weight[idx] = 0.129
 
     decision_tree = DecisionTreeClassifier(criterion="entropy", random_state=random_state,
-                                           max_depth=4, class_weight=class_weight)
+                                           max_depth=32, class_weight=class_weight)
+
+
 
     decision_tree = decision_tree.fit(X_train, y_train)
 
-    res = cross_val_score(decision_tree, X_test, y_test, cv=10)
-    print(res)
+    # res = cross_val_score(decision_tree, X_test, y_test, cv=2)
+    # print(res)
 
     dot_data = tree.export_graphviz(decision_tree, out_file=None,
                                     feature_names=x_labels,

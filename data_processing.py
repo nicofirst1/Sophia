@@ -9,7 +9,7 @@ def read_data(path2file):
     :param path2file: str, path to file
     :return: pd.DataFrame
     """
-    df = pd.read_excel(path2file)
+    df = pd.read_excel(path2file, sheet_name=1)
 
     x_labels = []
     cur_label = ""
@@ -83,7 +83,7 @@ def expand_all_key2(dataframe):
     return dataframe
 
 
-def expand_all_key(dataframe):
+def expand_all_key(dataframe, key=""):
     """
     Some of the questions have multiple answers, such answers have also 'all' as a possibility.
     Exapand all to all possibilities
@@ -92,6 +92,10 @@ def expand_all_key(dataframe):
     """
     for all_coll in dataframe.columns.values:
         if "all" not in all_coll:
+            continue
+
+        if key!="" and key not in all_coll:
+            dataframe = dataframe.drop(all_coll, axis=1)
             continue
 
         # get parent name
@@ -108,6 +112,11 @@ def expand_all_key(dataframe):
 
             row_indices = [elem for elem in row.index.values if parent_label in elem]
 
+            if "Age" in parent_label:
+                min_ = sorted([x for x in row_indices if "<" in x])[-1]
+                max_ = [x for x in row_indices if ">" in x][0]
+                row_indices = [min_, max_]
+
             for r_idx in row_indices:
                 n_row = row.copy()
                 n_row[r_idx] = 1
@@ -119,6 +128,25 @@ def expand_all_key(dataframe):
 
         new_rows = pd.concat(new_rows, axis=1).T
         dataframe = pd.concat([dataframe, new_rows], ignore_index=True)
+
+    return dataframe
+
+
+
+
+def drop_all_key(dataframe):
+    """
+    Some of the questions have multiple answers, such answers have also 'all' as a possibility.
+    Exapand all to all possibilities
+    :param dataframe:
+    :return:
+    """
+    for all_coll in dataframe.columns.values:
+        if "all" not in all_coll:
+            continue
+
+        dataframe= dataframe.drop(all_coll, axis=1)
+
 
     return dataframe
 
@@ -167,7 +195,7 @@ def data_pipeline(path2file):
     :return:
     """
     df = read_data(path2file)
-    df = expand_all_key(df)
+    df = drop_all_key(df)
 
     # df = categoriacl_data(df)
 
@@ -199,6 +227,6 @@ def get_labels(path2file):
 
 
 if __name__ == '__main__':
-    x_df, y_df = data_pipeline(dataset_file_path)
+    x_df, y_df, y_labels = data_pipeline(dataset_file_path)
 
     print(x_df)
