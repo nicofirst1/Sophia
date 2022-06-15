@@ -50,7 +50,7 @@ def interactive_questions(classifier, feat_lab, target_lab):
 
 
 if __name__ == '__main__':
-    path2file = "/home/dizzi/Downloads/Dataset.xlsx"
+    path2file = "/Users/giulia/Downloads/Dataset.xlsx"
     random_state = 42
 
     X, y, y_labels = data_pipeline(path2file)
@@ -84,7 +84,7 @@ if __name__ == '__main__':
             class_weight[idx] = 0.129
 
     decision_tree = DecisionTreeClassifier(criterion="entropy", random_state=random_state,
-                                           max_depth=32, class_weight=class_weight)
+                                           max_depth=64, class_weight=class_weight)
 
 
 
@@ -102,4 +102,4 @@ if __name__ == '__main__':
     graph.save()
     graph.view()
     print("\n\n\n\n")
-    interactive_questions(decision_tree, x_labels, y_labels)
+    #interactive_questions(decision_tree, x_labels, y_labels)
